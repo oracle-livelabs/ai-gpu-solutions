@@ -22,13 +22,13 @@ This lab assumes you have:
 
 ## Task 1: Provision resources
 
-1. Go to Resource manager -> Stacks -> Create Stack. Choose My configuration and upload the provided zip file and click Next: [orm-stack-oke-helm-deployment-vllm.zip](https://objectstorage.us-ashburn-1.oraclecloud.com/p/Z7QTIjq8Mtyr_r4U-RYmASfn_dnET8MsiYhDpa9UaAlkU_5fc8NyJPg8ePTUuQ-q/n/c4u02/b/hosted_workshops/o/orm-stack-oke-helm-deployment-vllm.zip)
+1. Go to Resource manager -> Stacks -> Create Stack. Choose My configuration and upload the provided zip file and click Next: [orm-stack-oke-helm-deployment-vllm.zip](https://c4u02.objectstorage.us-ashburn-1.oci.customer-oci.com/p/tfC_fKB7HB5Wo1pvpYu1fHifVw-E7MZruSx9l5J6ebjhGZOwsFawUiJlJhzgR7Hy/n/c4u02/b/hosted_workshops/o/orm-stack-oke-helm-deployment-vllm.zip)
 
     ![Resource Manager](images/resource_manager.png)
 
     Or you could use a single click deployment button shown below
 
-    [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://objectstorage.us-ashburn-1.oraclecloud.com/p/Z7QTIjq8Mtyr_r4U-RYmASfn_dnET8MsiYhDpa9UaAlkU_5fc8NyJPg8ePTUuQ-q/n/c4u02/b/hosted_workshops/o/orm-stack-oke-helm-deployment-vllm.zip)
+    [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://c4u02.objectstorage.us-ashburn-1.oci.customer-oci.com/p/tfC_fKB7HB5Wo1pvpYu1fHifVw-E7MZruSx9l5J6ebjhGZOwsFawUiJlJhzgR7Hy/n/c4u02/b/hosted_workshops/o/orm-stack-oke-helm-deployment-vllm.zip)
 
 2. Provide the information for **Compartment**, **Kubernetes Cluster Name (Any suitable name)** , **Check Create new VCN**, **VCN Name (Any suitable name)**, **Leave other Networking information as default**, **Kubernetes nodepool configuration (You can leave them as default or change according to your preference)**
 

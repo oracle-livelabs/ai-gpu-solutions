@@ -96,7 +96,7 @@ This lab assumes you have:
 
     ![Stream_Message](images/stream_message.png)
 
-2. Use the following python script to send a random temperature after every second. Click on the link to download the script: [send_telemetry.py](https://objectstorage.us-ashburn-1.oraclecloud.com/p/OaVlhC2SwLpwqkAZ4sfijoYU_nOcRSX8yPT1WZD3-fqN_XwdOwZcSnZVoEPI5ELE/n/c4u02/b/hosted_workshops/o/send_telemetry.py)
+2. Use the following python script to send a random temperature after every second. Click on the link to download the script: [send_telemetry.py](https://c4u02.objectstorage.us-ashburn-1.oci.customer-oci.com/p/tfC_fKB7HB5Wo1pvpYu1fHifVw-E7MZruSx9l5J6ebjhGZOwsFawUiJlJhzgR7Hy/n/c4u02/b/hosted_workshops/o/send_telemetry.py)
 
 3. You will need to change the url and device id on line 7 and 8 of the script. In the url section, replace the public ip of the instance. For device id, use Access Token saved in Task 1. Also shown in the image below.
 

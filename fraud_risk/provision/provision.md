@@ -20,13 +20,13 @@ This lab assumes you have:
 
 ## Task 1: Provision resources
 
-1. Go to Resource manager -> Stacks -> Create Stack. Choose My configuration and upload the provided zip file and click Next: [orm_stack_a10_gpu-ai_fin_new_vcn.zip](https://objectstorage.us-ashburn-1.oraclecloud.com/p/MowTvhjhvgsR5msJwtCzVxhveQKdE9T0ii9jcWnCZvwKScoR7TFkuDdCDLITZorc/n/c4u02/b/hosted_workshops/o/orm_stack_a10_gpu-ai_fin_new_vcn.zip)
+1. Go to Resource manager -> Stacks -> Create Stack. Choose My configuration and upload the provided zip file and click Next: [orm_stack_a10_gpu-ai_fin_new_vcn.zip](https://c4u02.objectstorage.us-ashburn-1.oci.customer-oci.com/p/tfC_fKB7HB5Wo1pvpYu1fHifVw-E7MZruSx9l5J6ebjhGZOwsFawUiJlJhzgR7Hy/n/c4u02/b/hosted_workshops/o/orm_stack_a10_gpu-ai_fin_new_vcn.zip)
 
     ![Resource Manager](images/resource_manager.png)
 
     Or you could use a single click deployment button shown below
 
-    [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://objectstorage.us-ashburn-1.oraclecloud.com/p/MowTvhjhvgsR5msJwtCzVxhveQKdE9T0ii9jcWnCZvwKScoR7TFkuDdCDLITZorc/n/c4u02/b/hosted_workshops/o/orm_stack_a10_gpu-ai_fin_new_vcn.zip)
+    [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://c4u02.objectstorage.us-ashburn-1.oci.customer-oci.com/p/tfC_fKB7HB5Wo1pvpYu1fHifVw-E7MZruSx9l5J6ebjhGZOwsFawUiJlJhzgR7Hy/n/c4u02/b/hosted_workshops/o/orm_stack_a10_gpu-ai_fin_new_vcn.zip)
 
 2. Provide the information for **Compartment**, **VM Display Name (Any suitable name)**, **Shape (Keep GPU A10 shape)**, **Operating System (Either Oracle Linux or Canonical Ubuntu (According to your preference)**, **Operating System Version (If you choose Oracle Linux then it should be 8 otherwise 24.04 for Ubuntu)**
 
