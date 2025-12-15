@@ -173,4 +173,4 @@ On your local machine, go to http://localhost:8000/cuopt/docs , where you can al
 * **Guido Alejandro Ferreyra**, Principal Cloud Architect, NACIE
 
 **Last Updated By/Date:**
-* **Guido Alejandro Ferreyra**, Principal Cloud Architect, NACIE, December 2015
+* **Guido Alejandro Ferreyra**, Principal Cloud Architect, NACIE, December 2025
