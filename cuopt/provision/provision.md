@@ -19,7 +19,7 @@ Provisioning of Nvidia container
 This lab assumes you have:
 
 * An Oracle account
-* Administrator permissions or permissions to use the OCI Compute, Identity Domains, A10 images, NGC API Key.
+* Administrator permissions or permissions to use the OCI Compute, Identity Domains, A10 shapes available.
 
 ## Task 1: Launch an A10 instance
 
@@ -27,7 +27,7 @@ This lab assumes you have:
 
     ![A10](images/a10.png)
 
-2. Click on Change Image and select Gen2-GPU-2024 (one on the top) as Image Build under Oracle Linux 8. Shown in the image below.
+2. Click on Change Image and select the latest GPU version (one on the top) as Image Build under Oracle Linux 8. Shown in the image below.
 
     ![GPU](images/gpu.png)
 
@@ -37,13 +37,19 @@ Click **Create**
 
 ![Create_Instance](images/create_instance.png)
 
-## Task 2: Run Nvidia Container
+## Task 2: Install NVIDIA container toolkit
 
 1. In few minutes the status of recently created  instance will change from **Provisioning** to **Running**. 
 
-2. Access the instance using the public ip of the instance with the following command 'ssh -i <ssh_key> opc@public_ip'.
+2. Access the instance using the public ip of the instance with the following command:
 
-3. Install nvidia-container-toolkit
+    ```text
+        <copy>
+        ssh -i <ssh_key> opc@public_ip
+        </copy>
+    ```
+
+5. Install nvidia-container-toolkit
 
     ```text
         <copy>
@@ -51,7 +57,7 @@ Click **Create**
         </copy>
     ```
 
-4. Run the following command
+6. Run the following command
 
     ```text
         <copy>
@@ -59,7 +65,7 @@ Click **Create**
         </copy>
     ```
 
-5. Generate CDI configuration for podman
+7. Generate CDI configuration for podman
 
     ```text
         <copy>
@@ -67,7 +73,7 @@ Click **Create**
         </copy>
     ```
 
-6. Setup nvidia driver to be persistent across reboots
+8. Setup nvidia driver to be persistent across reboots
 
     ```text
         <copy>
@@ -75,7 +81,7 @@ Click **Create**
         </copy>
     ```
 
-7. Run the following command.
+9. Run the following command.
 
     ```text
         <copy>
@@ -83,7 +89,7 @@ Click **Create**
         </copy>
     ```
 
-8. Install podman
+10. Install podman
 
 ```text
     <copy>
@@ -105,92 +111,66 @@ Click **Create**
     </copy>
 ```
 
-## Task 3: Generate NGC API Key
+## Task 3: Run NVIDIA cuOpt container
 
-Follow the steps listed in the following link to generate an api key which will be used in next task. [NGC API Key](https://docs.nvidia.com/ai-enterprise/deployment-guide-spark-rapids-accelerator/0.1.0/appendix-ngc.html)
-
-## Task 4: Continue with Steps to run the container
-
-1. Login to nvcr.io. Use the api key generated in previous step.
+1. Run the cuopt image
 
     ```text
         <copy>
-        sudo podman login nvcr.io --username '$oauthtoken' --password $api_key
+        sudo podman run --rm --device nvidia.com/gpu=all -p 8000:8000 -e CUOPT_SERVER_PORT=8000 docker.io/nvidia/cuopt:latest-cuda12.8-py3.12
         </copy>
     ```
 
-2. Pull cuopt from nvcr.io
+## Task 4: Test cuOpt with an API call
 
-    ```text
-        <copy>
-        sudo podman pull nvcr.io/nvidia/cuopt/cuopt:25.08
-        </copy>
-    ```
-
-3. Create systemd service file for cuopt
-
-    ```text
-        <copy>
-        sudo tee /etc/systemd/system/cuopt.service <<EOF
-        [Unit]
-        Description=Podman cuopt Container
-        After=network.target
-        [Service]
-        Type=simple
-        Restart=always
-        ExecStart=/usr/bin/podman run --rm --device nvidia.com/gpu=all -p 5000:5000 nvcr.io/nvidia/cuopt/cuopt:25.08
-        [Install]
-        WantedBy=multi-user.target
-        EOF
-        </copy>
-    ```
-
-4. Reload systemd and start the service
-
-    ```text
-        <copy>
-        sudo systemctl daemon-reload
-        </copy>
-    ```
-
-    ```text
-        <copy>
-        sudo systemctl start cuopt.service
-        </copy>
-    ```
-
-5. Enable automatic start on boot
-
-    ```text
-        <copy>
-        sudo systemctl enable cuopt.service
-        </copy>
-    ```
-
-## Task 5: Test cuOpt with an API call
-
-Run the following command to test the container
+Open a new SSH session with the following command (leave the previous one open so you will be able to see cuOpt logs) :
 
 ```text
     <copy>
-   curl --location 'http://0.0.0.0:5000/cuopt/routes' \
-   --header 'Content-Type: application/json' \
-   --header "CLIENT-VERSION: custom" \
-   -d '{
-    "cost_matrix_data": {"data": {"0": [[0, 1], [1, 0]]}},
-    "task_data": {"task_locations": [1], "demand": [[1]], "task_time_windows": [[0, 10]], "service_times": [1]},
-    "fleet_data": {"vehicle_locations":[[0, 0]], "capacities": [[2]], "vehicle_time_windows":[[0, 20]] },
-    "solver_config": {"time_limit": 2}
+    ssh -i <ssh_key> opc@public_ip -L 8000:localhost:8000
+    </copy>
+```
+
+```text
+    <copy>
+    curl --location 'http://localhost:8000/cuopt/request' \
+    --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
+    --data '{
+        "cost_matrix_data": { "data": { "0": [[0, 1], [1, 0]] } },
+        "task_data": {
+            "task_locations": [1],
+            "demand": [[1]],
+            "task_time_windows": [[0, 10]],
+            "service_times": [1]
+        },
+        "fleet_data": {
+            "vehicle_locations": [[0, 0]],
+            "capacities": [[2]],
+            "vehicle_time_windows": [[0, 20]]
+        },
+        "solver_config": { "time_limit": 1 }
     }'
     </copy>
 ```
+
+You will receive a reqId. Now run the following command, and you should see that the request has been completed:
+
+```text
+    <copy>
+    curl --location 'http://localhost:8000/cuopt/result/YOUR_REQUEST_ID' \
+    --header 'Accept: application/json'
+    </copy>
+```
+## Task 5: Discover the cuOpt documentation
+
+On your local machine, go to http://localhost:8000/cuopt/docs , where you can also run multiple tests.
 
 ## Acknowledgements
 
 **Authors**
 
 * **Guido Alejandro Ferreyra**, Principal Cloud Architect, NACIE
-* **Abhinav Jain**, Senior Cloud Engineer, NACIE
 
 **Last Updated By/Date:**
-* **Abhinav Jain**, Senior Cloud Engineer, NACIE, August 2025
+* **Guido Alejandro Ferreyra**, Principal Cloud Architect, NACIE, December 2015
