@@ -47,7 +47,7 @@ This lab assumes you have:
 
     ```text
         <copy>
-        curl -s -L https://NVIDIA.github.io/libNVIDIA-container/stable/rpm/NVIDIA-container-toolkit.repo | sudo tee /etc/yum.repos.d/NVIDIA-container-toolkit.repo
+        curl -s -L https://nvidia.github.io/libNVIDIA-container/stable/rpm/nvidia-container-toolkit.repo | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
         </copy>
     ```
 
@@ -55,7 +55,7 @@ This lab assumes you have:
 
     ```text
         <copy>
-        sudo yum install -y NVIDIA-container-toolkit
+        sudo yum install -y nvidia-container-toolkit
         </copy>
     ```
 
@@ -63,7 +63,7 @@ This lab assumes you have:
 
     ```text
         <copy>
-        sudo NVIDIA-ctk cdi generate --output=/etc/cdi/NVIDIA.yaml
+        sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
         </copy>
     ```
 
@@ -71,7 +71,7 @@ This lab assumes you have:
 
     ```text
         <copy>
-        sudo NVIDIA-persistenced
+        sudo nvidia-persistenced
         </copy>
     ```
 
@@ -79,7 +79,7 @@ This lab assumes you have:
 
     ```text
         <copy>
-        sudo systemctl enable NVIDIA-persistenced
+        sudo systemctl enable nvidia-persistenced
         </copy>
     ```
 
@@ -111,7 +111,7 @@ This lab assumes you have:
 
     ```text
         <copy>
-        sudo podman run --rm --device NVIDIA.com/gpu=all -p 8000:8000 -e CUOPT_SERVER_PORT=8000 docker.io/NVIDIA/cuopt:latest-cuda12.8-py3.12
+        sudo podman run --rm --device nvidia.com/gpu=all -p 8000:8000 -e CUOPT_SERVER_PORT=8000 docker.io/nvidia/cuopt:latest-cuda12.8-py3.12
         </copy>
     ```
 
