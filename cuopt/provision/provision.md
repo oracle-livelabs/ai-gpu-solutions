@@ -1,57 +1,57 @@
-# Provision of Nvidia Container
+# Provision of NVIDIA Container
 
 ## Introduction
 
-This lab will take you through the steps needed to provision Nvidia container on oci instance with an A10 shape which has GPU,
+This lab will take you through the steps needed to provision NVIDIA container on oci instance with an A10 shape which has GPU,
 
 Estimated Time: 45 minutes
 
-### About NVIDIA cuOpt
-
-NVIDIA cuOpt is an optimization tool that specializes in routing. It is run as a microservice in the cloud using the container provided. The cuOpt microservice leverages OpenAPI standards, serving endpoints running on port 5000 (by default) to accept optimization input data and return optimized routing solutions.
-
 ### Objectives
 
-Provisioning of Nvidia container
+Provisioning of NVIDIA container
 
 ### Prerequisites
 
 This lab assumes you have:
 
 * An Oracle account
-* Administrator permissions or permissions to use the OCI Compute, Identity Domains, A10 images, NGC API Key.
+* Administrator permissions or permissions to use the OCI Compute, Identity Domains, A10 shapes available.
 
 ## Task 1: Launch an A10 instance
 
 1. Go to Compute -> Instance -> Create Instance. Under Image and Shape choose A10 shape as shown in the image below.
 
-    ![A10](images/a10.png)
+    ![A10](images/a10.png "List of OCI instances shapes")
 
-2. Click on Change Image and select Gen2-GPU-2024 (one on the top) as Image Build under Oracle Linux 8. Shown in the image below.
+2. Click on Change Image and select the latest GPU version (one on the top) as Image Build under Oracle Linux 8. Shown in the image below.
 
-    ![GPU](images/gpu.png)
+    ![GPU](images/gpu.png "Drop down menu that show the different image build for the GPU shape")
 
-3. Provide the information for **VCN**, **Subnet (It has to be Public)**, **Add SSH Keys (Add keys to access your instance)**
+3. Provide the information for **VCN**, **Subnet (It has to be Public)**, **Add SSH Keys (Add keys to access your instance)** and click **Create**.
 
-Click **Create**
+    ![Create_Instance](images/create_instance.png "Setting up instance's connection parameters")
 
-![Create_Instance](images/create_instance.png)
-
-## Task 2: Run Nvidia Container
+## Task 2: Install NVIDIA container toolkit
 
 1. In few minutes the status of recently created  instance will change from **Provisioning** to **Running**. 
 
-2. Access the instance using the public ip of the instance with the following command 'ssh -i <ssh_key> opc@public_ip'.
-
-3. Install nvidia-container-toolkit
+2. Access the instance using the public ip of the instance with the following command:
 
     ```text
         <copy>
-        curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+        ssh -i <ssh_key> opc@public_ip
         </copy>
     ```
 
-4. Run the following command
+5. Install NVIDIA-container-toolkit
+
+    ```text
+        <copy>
+        curl -s -L https://nvidia.github.io/libNVIDIA-container/stable/rpm/nvidia-container-toolkit.repo | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+        </copy>
+    ```
+
+6. Run the following command
 
     ```text
         <copy>
@@ -59,7 +59,7 @@ Click **Create**
         </copy>
     ```
 
-5. Generate CDI configuration for podman
+7. Generate CDI configuration for podman
 
     ```text
         <copy>
@@ -67,7 +67,7 @@ Click **Create**
         </copy>
     ```
 
-6. Setup nvidia driver to be persistent across reboots
+8. Setup NVIDIA driver to be persistent across reboots
 
     ```text
         <copy>
@@ -75,7 +75,7 @@ Click **Create**
         </copy>
     ```
 
-7. Run the following command.
+9. Run the following command.
 
     ```text
         <copy>
@@ -83,114 +83,89 @@ Click **Create**
         </copy>
     ```
 
-8. Install podman
+10. Install podman
 
-```text
-    <copy>
-   sudo dnf module install -y container-tools:ol8
-    </copy>
-```
+    ```text
+        <copy>
+        sudo dnf module install -y container-tools:ol8
+        </copy>
+    ```
 
 9. Allow containers to use device files
 
-```text
-    <copy>
-    sudo setsebool -P container_use_devices 1
-    </copy>
-```
-
-```text
-    <copy>
-    sudo setsebool -P container_manage_cgroup on
-    </copy>
-```
-
-## Task 3: Generate NGC API Key
-
-Follow the steps listed in the following link to generate an api key which will be used in next task. [NGC API Key](https://docs.nvidia.com/ai-enterprise/deployment-guide-spark-rapids-accelerator/0.1.0/appendix-ngc.html)
-
-## Task 4: Continue with Steps to run the container
-
-1. Login to nvcr.io. Use the api key generated in previous step.
-
     ```text
         <copy>
-        sudo podman login nvcr.io --username '$oauthtoken' --password $api_key
-        </copy>
-    ```
-
-2. Pull cuopt from nvcr.io
-
-    ```text
-        <copy>
-        sudo podman pull nvcr.io/nvidia/cuopt/cuopt:25.08
-        </copy>
-    ```
-
-3. Create systemd service file for cuopt
-
-    ```text
-        <copy>
-        sudo tee /etc/systemd/system/cuopt.service <<EOF
-        [Unit]
-        Description=Podman cuopt Container
-        After=network.target
-        [Service]
-        Type=simple
-        Restart=always
-        ExecStart=/usr/bin/podman run --rm --device nvidia.com/gpu=all -p 5000:5000 nvcr.io/nvidia/cuopt/cuopt:25.08
-        [Install]
-        WantedBy=multi-user.target
-        EOF
-        </copy>
-    ```
-
-4. Reload systemd and start the service
-
-    ```text
-        <copy>
-        sudo systemctl daemon-reload
+        sudo setsebool -P container_use_devices 1
         </copy>
     ```
 
     ```text
         <copy>
-        sudo systemctl start cuopt.service
+        sudo setsebool -P container_manage_cgroup on
         </copy>
     ```
 
-5. Enable automatic start on boot
+## Task 3: Run NVIDIA cuOpt container
+
+1. Run the cuopt image
 
     ```text
         <copy>
-        sudo systemctl enable cuopt.service
+        sudo podman run --rm --device nvidia.com/gpu=all -p 8000:8000 -e CUOPT_SERVER_PORT=8000 docker.io/nvidia/cuopt:latest-cuda12.8-py3.12
         </copy>
     ```
 
-## Task 5: Test cuOpt with an API call
+## Task 4: Test cuOpt with an API call
 
-Run the following command to test the container
+Open a new SSH session with the following command (leave the previous one open so you will be able to see cuOpt logs):
 
 ```text
-    <copy>
-   curl --location 'http://0.0.0.0:5000/cuopt/routes' \
-   --header 'Content-Type: application/json' \
-   --header "CLIENT-VERSION: custom" \
-   -d '{
-    "cost_matrix_data": {"data": {"0": [[0, 1], [1, 0]]}},
-    "task_data": {"task_locations": [1], "demand": [[1]], "task_time_windows": [[0, 10]], "service_times": [1]},
-    "fleet_data": {"vehicle_locations":[[0, 0]], "capacities": [[2]], "vehicle_time_windows":[[0, 20]] },
-    "solver_config": {"time_limit": 2}
-    }'
-    </copy>
+        <copy>
+        ssh -i <ssh_key> opc@public_ip -L 8000:localhost:8000
+        </copy>
 ```
+```text
+        <copy>
+        curl --location 'http://localhost:8000/cuopt/request' \
+        --header 'Content-Type: application/json' \
+        --header 'Accept: application/json' \
+        --data '{
+            "cost_matrix_data": { "data": { "0": [[0, 1], [1, 0]] } },
+            "task_data": {
+            "task_locations": [1],
+            "demand": [[1]],
+            "task_time_windows": [[0, 10]],
+            "service_times": [1]
+            },
+            "fleet_data": {
+                "vehicle_locations": [[0, 0]],
+                "capacities": [[2]],
+                "vehicle_time_windows": [[0, 20]]
+            },
+            "solver_config": { "time_limit": 1 }
+        }'
+        </copy>
+```
+
+
+You will receive a reqId. Now run the following command, and you should see that the request has been completed:
+
+```text
+        <copy>
+        curl --location 'http://localhost:8000/cuopt/result/YOUR_REQUEST_ID' \
+        --header 'Accept: application/json'
+        </copy>
+```
+
+## Task 5: Discover the cuOpt documentation
+
+On your local machine, go to [http://localhost:8000/cuopt/docs](http://localhost:8000/cuopt/docs), where you can also run multiple tests.
 
 ## Acknowledgements
 
 **Authors**
 
 * **Guido Alejandro Ferreyra**, Principal Cloud Architect, NACIE
-* **Abhinav Jain**, Senior Cloud Engineer, NACIE
 
 **Last Updated By/Date:**
-* **Abhinav Jain**, Senior Cloud Engineer, NACIE, August 2025
+* **Guido Alejandro Ferreyra**, Principal Cloud Architect, NACIE, December 2025
