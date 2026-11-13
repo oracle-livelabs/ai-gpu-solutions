@@ -57,7 +57,7 @@ To deploy the infrastructure for this lab, you will create and configure a stack
 1. **Create the ORM stack**
     
     * Navigate to the Resource Manager section in the Oracle Cloud Console:  _Developer Services_ -> _Resource manager_ -> _Stacks_ -> _Create Stack_.
-    * Choose _My configuration_, upload this [infrastructure automation stack](https://c4u04.objectstorage.us-ashburn-1.oci.customer-oci.com/p/EcTjWk2IuZPZeNnD_fYMcgUhdNDIDA6rt9gaFj_WZMiL7VvxPBNMY60837hu5hga/n/c4u04/b/livelabsfiles/o/labfiles%2Flivelab_dcgm_prometheus_grafana.zip) and click **Next**.
+    * Choose _My configuration_, upload this [infrastructure automation stack](https://objectstorage.us-ashburn-1.oraclecloud.com/p/4Au3jJ-t8Wtw3LWyYsDMqQk2FdlXDvXCb1MYRS0J6P4QS-GCrv2YNOolWdtFMLZq/n/c4u04/b/livelabsfiles/o/labfiles%2Flivelab_dcgm_prometheus_grafana.zip) and click **Next**.
 
         ![Resource Manager](./../../dcgm_gpu_monitoring/infra/images/resource_manager.png " ")
 
